@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
-import { submitServiceRequest } from '../api';
+import { submitServiceRequest, startAnalysis, checkAnalysisStatus } from '../api';
 
 function ServiceApplicationPage() {
   const navigate = useNavigate();
@@ -12,6 +12,9 @@ function ServiceApplicationPage() {
   const [siteUrl, setSiteUrl] = useState('');
   const [siteDescription, setSiteDescription] = useState('');
   const [output, setOutput] = useState(null);
+  const [requestId, setRequestId] = useState(null);
+  const [analysisStatus, setAnalysisStatus] = useState('');
+  const [analysisResults, setAnalysisResults] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -24,21 +27,42 @@ function ServiceApplicationPage() {
         siteDescription,
       };
 
-      const response = await submitServiceRequest(formData);
-      
-      if (response.status === 201) {
-        setOutput(formData);
-        // 폼 초기화
-        setTargetName('');
-        setSocialMedia('');
-        setTargetDescription('');
-        setSiteUrl('');
-        setSiteDescription('');
-        // 성공 메시지 표시 가능
-      }
+      // 서비스 요청 제출
+      const submitResponse = await submitServiceRequest(formData);
+      const requestId = submitResponse.data.id;
+      setRequestId(requestId);
+
+      setOutput(formData);
+      setAnalysisStatus('processing');
+
+      // 분석 시작
+      await startAnalysis(requestId);
+
+      // 분석 상태 주기적 확인
+      const checkStatusInterval = setInterval(async () => {
+        const statusRes = await checkAnalysisStatus(requestId);
+        const status = statusRes.data.status;
+
+        if (status === 'completed' || status === 'error') {
+          clearInterval(checkStatusInterval);
+          setAnalysisStatus(status);
+
+          if (status === 'completed') {
+            setAnalysisResults(statusRes.data.results);
+          }
+        }
+      }, 5000); // 5초마다 상태 확인
+
+      // 폼 초기화
+      setTargetName('');
+      setSocialMedia('');
+      setTargetDescription('');
+      setSiteUrl('');
+      setSiteDescription('');
+
     } catch (error) {
-      console.error('Error submitting form:', error);
-      // 에러 메시지 표시 가능
+      console.error('Error:', error);
+      setAnalysisStatus('error');
     }
   };
 
@@ -106,7 +130,7 @@ function ServiceApplicationPage() {
               />
             </FormGroup>
 
-            <SubmitButton type="submit">정보 제출</SubmitButton>
+            <SubmitButton type="submit">정보 제출완료</SubmitButton>
           </FormSection>
         </FormContainer>
 
@@ -118,6 +142,26 @@ function ServiceApplicationPage() {
             <OutputItem><Strong>기타 관련 정보:</Strong> {output.targetDescription}</OutputItem>
             <OutputItem><Strong>사이트 URL:</Strong> {output.siteUrls.join(', ')}</OutputItem>
             <OutputItem><Strong>사이트 설명:</Strong> {output.siteDescription}</OutputItem>
+            
+            <SectionTitle>분석 상태</SectionTitle>
+            <OutputItem>
+              <Strong>상태:</Strong> {analysisStatus === 'processing' ? '분석 중...' : 
+                                    analysisStatus === 'completed' ? '분석 완료' : 
+                                    analysisStatus === 'error' ? '분석 실패' : '대기 중'}
+            </OutputItem>
+            
+            {analysisResults && (
+              <>
+                <SectionTitle>분석 결과</SectionTitle>
+                {analysisResults.map((result, index) => (
+                  <OutputItem key={index}>
+                    <Strong>URL:</Strong> {result.url}<br/>
+                    <Strong>내용:</Strong> {result.text}<br/>
+                    <Strong>독성 점수:</Strong> {result.score}
+                  </OutputItem>
+                ))}
+              </>
+            )}
           </OutputContainer>
         )}
       </ContentWrapper>
