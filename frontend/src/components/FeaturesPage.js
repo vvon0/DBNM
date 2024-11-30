@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
+import Footer from './Footer';
 
 function FeaturePage() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function FeaturePage() {
     },
     {
       title: "24시간 모니터링",
-      description: "연중무휴 24시간 실시간 모니터링 시스템을 통해 악성 댓글 발생 즉시 감지하고 대응합니다. 신속한 알림 시스템으로 즉각적인 조치가 가능합니다.",
+      description: "낮 말은 새가 듣고, 밤 말은 쥐가 듣는다. 연중무휴 24시간 실시간 모니터링 시스템을 통해 악성 댓글 발생 즉시 감지하고 대응합니다. 신속한 알림 시스템으로 즉각적인 조치가 가능합니다.",
       icon: "monitoring_icon.png"
     }
   ];
@@ -44,6 +45,7 @@ function FeaturePage() {
           ))}
         </FeaturesGrid>
       </ContentWrapper>
+      <Footer />
     </Wrapper>
   );
 }

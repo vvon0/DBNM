@@ -2,6 +2,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
+import Footer from './Footer';
 
 function PartnerPage() {
   const navigate = useNavigate();
@@ -15,12 +16,12 @@ function PartnerPage() {
     {
       name: "업체 B",
       logo: "2_logo.png",
-      description: "업체 B는 우리의 기술을 도입하여 활용하여 악플 모니터링시스템을 도입합니다."
+      description: "업체 B는 소셜 미디어에서의 악플을 분석하여 고객 피드백을 개선했습니다."
     },
     {
       name: "업체 C",
       logo: "3_logo.png",
-      description: "업체 C는 우리의 기술을 도입하여 활용하여 악플 모니터링시스템을 도입합니다."
+      description: "업체 C는 악플 데이터를 기반으로 법적 대응 전략을 수립했습니다."
     }
   ];
 
@@ -50,6 +51,7 @@ function PartnerPage() {
           ))}
         </CompanyGrid>
       </ContentWrapper>
+      <Footer />
     </Wrapper>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
@@ -9,9 +10,29 @@ function ServiceApplicationPage() {
   const [targetName, setTargetName] = useState('');
   const [socialMedia, setSocialMedia] = useState('');
   const [targetDescription, setTargetDescription] = useState('');
-  const [siteUrl, setSiteUrl] = useState('');
+  const [siteUrls, setSiteUrls] = useState(['']);
   const [siteDescription, setSiteDescription] = useState('');
   const [output, setOutput] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleAddUrl = () => {
+    setSiteUrls([...siteUrls, '']);
+  };
+
+  const handleUrlChange = (index, value) => {
+    const newUrls = [...siteUrls];
+    newUrls[index] = value;
+    setSiteUrls(newUrls);
+  };
+
+  const getPricingTier = (urlCount) => {
+    if (urlCount <= 5) return 'basic';
+    if (urlCount <= 15) return 'pro';
+    return 'enterprise';
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +41,7 @@ function ServiceApplicationPage() {
         targetName,
         socialMedia,
         targetDescription,
-        siteUrls: siteUrl.split(',').map(url => url.trim()),
+        siteUrls: siteUrls.filter(url => url.trim() !== ''),
         siteDescription,
       };
 
@@ -28,17 +49,14 @@ function ServiceApplicationPage() {
       
       if (response.status === 201) {
         setOutput(formData);
-        // 폼 초기화
         setTargetName('');
         setSocialMedia('');
         setTargetDescription('');
-        setSiteUrl('');
+        setSiteUrls(['']);
         setSiteDescription('');
-        // 성공 메시지 표시 가능
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      // 에러 메시지 표시 가능
     }
   };
 
@@ -85,17 +103,32 @@ function ServiceApplicationPage() {
 
           <FormSection>
             <SectionTitle>악플을 찾을 사이트 입력</SectionTitle>
-            <FormGroup>
-              <Label htmlFor="siteUrl">사이트 URL:</Label>
-              <Input
-                type="text"
-                id="siteUrl"
-                value={siteUrl}
-                onChange={(e) => setSiteUrl(e.target.value)}
-                required
-              />
-              <SmallText>여러 개의 URL을 입력하려면 쉼표로 구분하세요.</SmallText>
-            </FormGroup>
+            {siteUrls.map((url, index) => (
+              <FormGroup key={index}>
+                <Label>사이트 URL {index + 1}:</Label>
+                <UrlInputWrapper tier={getPricingTier(index + 1)}>
+                  <Input
+                    type="text"
+                    value={url}
+                    onChange={(e) => handleUrlChange(index, e.target.value)}
+                    required
+                  />
+                </UrlInputWrapper>
+              </FormGroup>
+            ))}
+            <AddUrlButton type="button" onClick={handleAddUrl}>
+              + 사이트 URL 추가하기
+            </AddUrlButton>
+            {siteUrls.length === 5 && (
+              <PricingMessage tier="pro">
+                이후 추가되는 URL은 Pro 요금제가 적용됩니다.
+              </PricingMessage>
+            )}
+            {siteUrls.length === 15 && (
+              <PricingMessage tier="enterprise">
+                이후 추가되는 URL은 Enterprise 요금제가 적용됩니다.
+              </PricingMessage>
+            )}
 
             <FormGroup>
               <Label htmlFor="siteDescription">사이트 설명:</Label>
@@ -255,4 +288,66 @@ const OutputItem = styled.p`
 
 const Strong = styled.strong`
   font-weight: 600;
+`;
+
+const UrlInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  
+  input {
+    border-color: ${props => {
+      switch(props.tier) {
+        case 'pro':
+          return '#007bff';
+        case 'enterprise':
+          return '#7B3FE4';
+        default:
+          return '#ddd';
+      }
+    }};
+    border-width: 2px;
+  }
+`;
+
+const AddUrlButton = styled.button`
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  margin: 10 px 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const PricingMessage = styled.div`
+  margin: 10px 0;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: ${props => {
+    switch(props.tier) {
+      case 'pro':
+        return '#E6F0FF';
+      case 'enterprise':
+        return '#F0E6FF';
+      default:
+        return '#f5f5f5';
+    }
+  }};
+  color: ${props => {
+    switch(props.tier) {
+      case 'pro':
+        return '#007bff';
+      case 'enterprise':
+        return '#7B3FE4';
+      default:
+        return '#666';
+    }
+  }};
 `;
