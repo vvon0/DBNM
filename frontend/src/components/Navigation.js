@@ -27,7 +27,13 @@ function Navigation() {
         onClick={() => handleTabClick('/partners')}
         isActive={location.pathname === '/partners'}
       >
-        협력업체
+        협력 업체
+      </NavItem>
+      <NavItem 
+        onClick={() => handleTabClick('/faq')}
+        isActive={location.pathname === '/faq'}
+      >
+        자주 묻는 질문
       </NavItem>
     </Nav>
   );

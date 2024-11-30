@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import Navigation from './Navigation';
 import Footer from './Footer';
 
 function FAQPage() {
+    
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
+
   const [openIndex, setOpenIndex] = useState(null);
 
   const faqs = [

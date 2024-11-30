@@ -3,8 +3,14 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
 import Footer from './Footer';
+import { useEffect } from 'react';
 
 function PartnerPage() {
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const navigate = useNavigate();
 
   const partners = [

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from "styled-components";
 
 function Footer() {
@@ -14,11 +13,6 @@ function Footer() {
             <p>전화: 02-123-4567</p>
           </div>
         </CompanyInfo>
-        <LinksSection>
-          <LinkColumn>
-            <StyledLink to="/faq">자주 묻는 질문</StyledLink>
-          </LinkColumn>
-        </LinksSection>
       </FooterContent>
       <Copyright>
         © 2024 DBNM. All rights reserved.
@@ -64,33 +58,6 @@ const CompanyName = styled.h3`
   font-weight: 700;
   margin-bottom: 20px;
   color: #333;
-`;
-
-const LinksSection = styled.div`
-  display: flex;
-  gap: 60px;
-  
-  @media (max-width: 768px) {
-    gap: 30px;
-  }
-`;
-
-const LinkColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const StyledLink = styled(Link)`
-  font-size: 24px;
-  font-weight: 700;
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-  
-  &:hover {
-    color: #666;
-  }
 `;
 
 const Copyright = styled.div`

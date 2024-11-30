@@ -2,9 +2,14 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
 import Footer from './Footer';
+import { useEffect } from 'react';
 
 function FeaturePage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const features = [
     {
