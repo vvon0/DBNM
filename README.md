@@ -1,4 +1,4 @@
-# 🛡️ DBNM (Digital Bullying Network Manager)
+# 🛡️ DBNM (Digital Bad-comment Network Manager)
 
 ## 🎯 프로젝트 개요
 DBNM은 온라인 상의 악성 댓글을 실시간으로 모니터링하고 분석하는 AI 기반 서비스입니다. 
