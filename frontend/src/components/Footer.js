@@ -1,3 +1,5 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from "styled-components";
 
 function Footer() {
@@ -14,7 +16,7 @@ function Footer() {
         </CompanyInfo>
         <LinksSection>
           <LinkColumn>
-            <FooterLink>자주 묻는 질문</FooterLink>
+            <StyledLink to="/faq">자주 묻는 질문</StyledLink>
           </LinkColumn>
         </LinksSection>
       </FooterContent>
@@ -79,15 +81,15 @@ const LinkColumn = styled.div`
   gap: 10px;
 `;
 
-const FooterLink = styled.h3`
-  cursor: pointer;
+const StyledLink = styled(Link)`
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 20px;
   color: #333;
+  text-decoration: none;
+  cursor: pointer;
   
   &:hover {
-    color: #333;
+    color: #666;
   }
 `;
 
