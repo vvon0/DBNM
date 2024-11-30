@@ -1,0 +1,13 @@
+CREATE DATABASE IF NOT EXISTS dbnm;
+USE dbnm;
+
+CREATE TABLE IF NOT EXISTS service_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    target_name VARCHAR(100) NOT NULL,
+    social_media VARCHAR(100) NOT NULL,
+    target_description TEXT,
+    site_urls TEXT NOT NULL,
+    site_description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
