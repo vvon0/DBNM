@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Navigation from './Navigation';
+import { submitServiceRequest } from '../api';
 
 function ServiceApplicationPage() {
   const navigate = useNavigate();
@@ -12,21 +13,33 @@ function ServiceApplicationPage() {
   const [siteDescription, setSiteDescription] = useState('');
   const [output, setOutput] = useState(null);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setOutput({
-      targetName,
-      socialMedia,
-      targetDescription,
-      siteUrl: siteUrl.split(','),
-      siteDescription,
-    });
+    try {
+      const formData = {
+        targetName,
+        socialMedia,
+        targetDescription,
+        siteUrls: siteUrl.split(',').map(url => url.trim()),
+        siteDescription,
+      };
 
-    setTargetName('');
-    setSocialMedia('');
-    setTargetDescription('');
-    setSiteUrl('');
-    setSiteDescription('');
+      const response = await submitServiceRequest(formData);
+      
+      if (response.status === 201) {
+        setOutput(formData);
+        // 폼 초기화
+        setTargetName('');
+        setSocialMedia('');
+        setTargetDescription('');
+        setSiteUrl('');
+        setSiteDescription('');
+        // 성공 메시지 표시 가능
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // 에러 메시지 표시 가능
+    }
   };
 
   return (
@@ -103,7 +116,7 @@ function ServiceApplicationPage() {
             <OutputItem><Strong>이름:</Strong> {output.targetName}</OutputItem>
             <OutputItem><Strong>소셜 미디어 계정:</Strong> {output.socialMedia}</OutputItem>
             <OutputItem><Strong>기타 관련 정보:</Strong> {output.targetDescription}</OutputItem>
-            <OutputItem><Strong>사이트 URL:</Strong> {output.siteUrl.join(', ')}</OutputItem>
+            <OutputItem><Strong>사이트 URL:</Strong> {output.siteUrls.join(', ')}</OutputItem>
             <OutputItem><Strong>사이트 설명:</Strong> {output.siteDescription}</OutputItem>
           </OutputContainer>
         )}
