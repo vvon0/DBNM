@@ -33,6 +33,8 @@ class AnalysisService {
 
       for (const url of urls) {
         const comments = await this.scraper.getComments(url);
+        console.log(`Fetched ${comments.length} comments from URL: ${url}`); // 추가된 로그
+
         if (!comments.length) {
           console.log(`No comments found for URL: ${url}`);
           continue;
@@ -40,6 +42,10 @@ class AnalysisService {
         const analyzed = comments
           .map((comment) => this.analyzer.analyzeComment(comment))
           .filter((result) => result.isToxic);
+
+        analyzed.forEach(comment => {
+          console.log(`Toxic Comment Found: "${comment.text}"`);
+        });
 
         toxicComments.push(...analyzed.map((result) => ({ ...result, url })));
       }
